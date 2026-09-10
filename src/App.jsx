@@ -1,6 +1,7 @@
 import { ToastProvider } from './components/ui/Toast'
 import { EmailSheetProvider } from './components/ui/EmailSheet'
 import { PlannerProvider } from './lib/planner/store'
+import { ContentProvider } from './lib/content'
 import { CourseDetailProvider } from './components/academic/CourseDetail'
 import { ROUTES, useRoute } from './lib/router'
 import Nav from './components/Nav'
@@ -25,6 +26,7 @@ function Page({ route }) {
 export default function App() {
   const route = useRoute()
   return (
+    <ContentProvider>
     <ToastProvider>
       <EmailSheetProvider>
         <PlannerProvider>
@@ -39,5 +41,6 @@ export default function App() {
         </PlannerProvider>
       </EmailSheetProvider>
     </ToastProvider>
+    </ContentProvider>
   )
 }
