@@ -10,7 +10,10 @@ function GalleryTile({ item, index, isLast }) {
   const lead = index === 0
   // Lead tile is a wide banner on mobile and a 2×2 block on larger screens.
   const span = lead ? 'col-span-2 sm:row-span-2' : isLast ? 'col-span-2 sm:col-span-1' : ''
-  const ratio = lead ? 'aspect-[16/10] sm:aspect-auto sm:h-full' : isLast ? 'aspect-[2/1] sm:aspect-square' : 'aspect-square'
+  // 4:3 tiles suit event photos better than squares; the lead tile fills its 2×2 block.
+  const ratio = lead ? 'aspect-[16/10] sm:aspect-auto sm:h-full' : isLast ? 'aspect-[2/1] sm:aspect-[4/3]' : 'aspect-[4/3]'
+  const FOCUS = { left: 'left center', right: 'right center', top: 'center top', bottom: 'center bottom' }
+  const objectPosition = FOCUS[item.focus] || 'center'
   return (
     <Reveal as="li" delay={index * 50} className={`${span} sm:h-full`}>
       <figure className="group relative h-full overflow-hidden rounded-2xl border border-line bg-white shadow-card">
@@ -21,6 +24,7 @@ function GalleryTile({ item, index, isLast }) {
                 src={item.src}
                 alt={item.alt || item.title || 'AIChE KU event'}
                 loading="lazy"
+                style={{ objectPosition }}
                 className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
               />
             </a>
