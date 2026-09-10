@@ -13,9 +13,9 @@
 import { COURSE_CATALOG, COURSE_CATEGORIES, courseLevel } from '../../data/academic/courses'
 
 /** Build the effective catalog for a plan (base catalog + plan overrides + membership flags). */
-export function buildCatalog(plan) {
+export function buildCatalog(plan, courseList = COURSE_CATALOG) {
   const map = new Map()
-  for (const base of COURSE_CATALOG) {
+  for (const base of courseList) {
     const override = plan?.overrides?.[base.code] ?? {}
     map.set(base.code, { ...base, ...override, level: courseLevel(base.code), compulsory: false, electiveGroup: null, inPlan: false })
   }
@@ -334,7 +334,7 @@ export function planProgress(plan, catalog, state) {
 }
 
 /** Group plan courses for display: by level (Year 1–4) or by category. */
-export function groupCourses(plan, catalog, mode = 'level') {
+export function groupCourses(plan, catalog, mode = 'level', categories = COURSE_CATEGORIES) {
   const codes = plan.requirements.flatMap((g) => g.courses)
   const courses = codes.map((code) => catalog.get(code)).filter(Boolean)
   if (mode === 'category') {
@@ -352,18 +352,18 @@ export function groupCourses(plan, catalog, mode = 'level') {
       id: `year-${level}`,
       title: `Year ${level}`,
       subtitle: `${level}00-level courses`,
-      courses: list.sort((a, b) => (COURSE_CATEGORIES[a.category]?.order ?? 9) - (COURSE_CATEGORIES[b.category]?.order ?? 9) || a.code.localeCompare(b.code)),
+      courses: list.sort((a, b) => (categories[a.category]?.order ?? 9) - (categories[b.category]?.order ?? 9) || a.code.localeCompare(b.code)),
       slots: [],
     }))
 }
 
 /** Search the catalog (code, name, category). */
-export function searchCourses(catalog, query, { planOnly = true } = {}) {
+export function searchCourses(catalog, query, { planOnly = true, categories = COURSE_CATEGORIES } = {}) {
   const q = query.trim().toLowerCase()
   if (!q) return []
   return [...catalog.values()]
     .filter((c) => (!planOnly || c.inPlan) && !c.unlisted)
-    .filter((c) => c.code.includes(q) || c.name.toLowerCase().includes(q) || (c.short ?? '').toLowerCase().includes(q) || (COURSE_CATEGORIES[c.category]?.label ?? '').toLowerCase().includes(q))
+    .filter((c) => c.code.includes(q) || c.name.toLowerCase().includes(q) || (c.short ?? '').toLowerCase().includes(q) || (categories[c.category]?.label ?? '').toLowerCase().includes(q))
     .slice(0, 12)
 }
 

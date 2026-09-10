@@ -1,6 +1,22 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { DEFAULT_PLAN_ID, getPlan } from '../../data/academic/plans'
+import { DEFAULT_PLAN_ID } from '../../data/academic/plans'
 import { buildCatalog } from './engine'
+import { useContent } from '../content'
+import { supabase } from '../supabase'
+
+const CLIENT_KEY = 'aiche-ku:client-id'
+function clientId() {
+  try {
+    let id = window.localStorage.getItem(CLIENT_KEY)
+    if (!id) {
+      id = window.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`
+      window.localStorage.setItem(CLIENT_KEY, id)
+    }
+    return id
+  } catch {
+    return null
+  }
+}
 
 const STORAGE_KEY = 'aiche-ku:planner:v1'
 
@@ -28,7 +44,7 @@ function load() {
     const raw = window.localStorage.getItem(STORAGE_KEY)
     if (!raw) return EMPTY
     const parsed = JSON.parse(raw)
-    return { ...EMPTY, ...parsed, prefs: { ...DEFAULT_PREFS, ...(parsed.prefs ?? {}) }, planId: getPlan(parsed.planId) ? parsed.planId : DEFAULT_PLAN_ID }
+    return { ...EMPTY, ...parsed, prefs: { ...DEFAULT_PREFS, ...(parsed.prefs ?? {}) } }
   } catch {
     return EMPTY
   }
@@ -43,7 +59,10 @@ const PlannerContext = createContext(null)
  * accounts and saved schedules arrive.
  */
 export function PlannerProvider({ children }) {
+  const { plans, courses } = useContent()
   const [data, setData] = useState(load)
+  const getPlan = useCallback((id) => plans.find((p) => p.id === id) ?? null, [plans])
+  const defaultPlanId = plans.find((p) => p.current)?.id ?? plans[0]?.id ?? DEFAULT_PLAN_ID
 
   useEffect(() => {
     try {
@@ -53,8 +72,24 @@ export function PlannerProvider({ children }) {
     }
   }, [data])
 
-  const plan = useMemo(() => getPlan(data.planId) ?? getPlan(DEFAULT_PLAN_ID), [data.planId])
-  const catalog = useMemo(() => buildCatalog(plan), [plan])
+  const plan = useMemo(() => getPlan(data.planId) ?? getPlan(defaultPlanId), [data.planId, getPlan, defaultPlanId])
+  const catalog = useMemo(() => buildCatalog(plan, courses), [plan, courses])
+
+  // Mirror the student's selections to Supabase (anonymous, keyed by a random client id) when configured.
+  useEffect(() => {
+    if (!supabase) return
+    const id = clientId()
+    if (!id) return
+    const timer = setTimeout(() => {
+      supabase
+        .from('planner_saves')
+        .upsert({ client_id: id, plan_id: data.planId, completed: data.completed, in_progress: data.inProgress, pinned: data.pinned, prefs: data.prefs, updated_at: new Date().toISOString() })
+        .then(({ error }) => {
+          if (error && import.meta.env.DEV) console.warn('[planner] save failed:', error.message)
+        })
+    }, 1500)
+    return () => clearTimeout(timer)
+  }, [data.planId, data.completed, data.inProgress, data.pinned, data.prefs])
 
   const state = useMemo(
     () => ({ completed: new Set(data.completed), inProgress: new Set(data.inProgress), pinned: new Set(data.pinned) }),
@@ -83,6 +118,8 @@ export function PlannerProvider({ children }) {
     () => ({
       data,
       plan,
+      plans,
+      getPlan,
       catalog,
       state,
       setPlan: (planId) => update({ planId }),
@@ -102,7 +139,7 @@ export function PlannerProvider({ children }) {
       clearMessages: () => update({ messages: [] }),
       reset: () => setData({ ...EMPTY, planId: data.planId }),
     }),
-    [data, plan, catalog, state, update, toggleIn],
+    [data, plan, plans, getPlan, catalog, state, update, toggleIn],
   )
 
   return <PlannerContext.Provider value={api}>{children}</PlannerContext.Provider>
