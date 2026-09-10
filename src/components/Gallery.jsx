@@ -5,38 +5,35 @@ import Icon from './ui/Icon'
 import { useContent } from '../lib/content'
 import { ANALYTICS_EVENTS } from '../lib/analytics'
 
-function GalleryTile({ item, index, isLast }) {
+/**
+ * Masonry gallery: every photo keeps its natural proportions and is shown in full
+ * (no cropping). Photos flow into 2 columns on phones and 3 on larger screens.
+ */
+function GalleryTile({ item, index }) {
   const caption = item.title || item.date
-  const lead = index === 0
-  // Lead tile is a wide banner on mobile and a 2×2 block on larger screens.
-  const span = lead ? 'col-span-2 sm:row-span-2' : isLast ? 'col-span-2 sm:col-span-1' : ''
-  // 4:3 tiles suit event photos better than squares; the lead tile fills its 2×2 block.
-  const ratio = lead ? 'aspect-[16/10] sm:aspect-auto sm:h-full' : isLast ? 'aspect-[2/1] sm:aspect-[4/3]' : 'aspect-[4/3]'
-  const FOCUS = { left: 'left center', right: 'right center', top: 'center top', bottom: 'center bottom' }
-  const objectPosition = FOCUS[item.focus] || 'center'
   return (
-    <Reveal as="li" delay={index * 50} className={`${span} sm:h-full`}>
-      <figure className="group relative h-full overflow-hidden rounded-2xl border border-line bg-white shadow-card">
-        <div className={`${ratio} w-full`}>
-          {item.src ? (
-            <a href={item.src} target="_blank" rel="noopener noreferrer" className="block h-full w-full" aria-label={`Open photo: ${item.title || item.alt || 'AIChE KU event'}`}>
-              <img
-                src={item.src}
-                alt={item.alt || item.title || 'AIChE KU event'}
-                loading="lazy"
-                style={{ objectPosition }}
-                className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-              />
-            </a>
-          ) : (
-            <div className="photo-placeholder flex h-full w-full flex-col items-center justify-center gap-2 text-brand-300 transition-colors group-hover:text-brand-500">
-              <Icon name="Camera" className="h-7 w-7" />
-              <span className="font-display text-[11px] font-semibold uppercase tracking-widest">Photo coming soon</span>
-            </div>
-          )}
-        </div>
+    <Reveal as="li" delay={Math.min(index, 8) * 50} className="mb-3 break-inside-avoid sm:mb-4">
+      <figure className="group relative overflow-hidden rounded-2xl border border-line bg-white shadow-card">
+        {item.src ? (
+          <a href={item.src} target="_blank" rel="noopener noreferrer" className="block" aria-label={`Open photo: ${item.title || item.alt || 'AIChE KU event'}`}>
+            <img
+              src={item.src}
+              alt={item.alt || item.title || 'AIChE KU event'}
+              loading="lazy"
+              width={item.width || undefined}
+              height={item.height || undefined}
+              style={item.width && item.height ? { aspectRatio: `${item.width} / ${item.height}` } : undefined}
+              className="block h-auto w-full bg-brand-50 transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+            />
+          </a>
+        ) : (
+          <div className="photo-placeholder flex aspect-[4/3] w-full flex-col items-center justify-center gap-2 text-brand-300 transition-colors group-hover:text-brand-500">
+            <Icon name="Camera" className="h-7 w-7" />
+            <span className="font-display text-[11px] font-semibold uppercase tracking-widest">Photo coming soon</span>
+          </div>
+        )}
         {caption && (
-          <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-900/80 to-transparent p-3 pt-8 text-white">
+          <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-900/80 to-transparent p-3 pt-8 text-white">
             {item.title && <span className="block font-display text-sm font-semibold">{item.title}</span>}
             {item.date && <span className="block text-xs text-white/75">{item.date}</span>}
           </figcaption>
@@ -55,6 +52,7 @@ function visibleItems(items) {
 export default function Gallery() {
   const { gallery: GALLERY } = useContent()
   const items = visibleItems(GALLERY.items)
+  const hasPhotos = items.length > 0 && Boolean(items[0].src)
   return (
     <Section id="gallery" aria-labelledby="gallery-title">
       <SectionHeading
@@ -74,13 +72,13 @@ export default function Gallery() {
           </Button>
         }
       />
-      <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-        {items.map((item, i, all) => (
-          <GalleryTile key={item.id} item={item} index={i} isLast={i === all.length - 1 && all.length % 2 === 0} />
+      <ul className="mt-8 columns-2 gap-3 sm:columns-3 sm:gap-4">
+        {items.map((item, i) => (
+          <GalleryTile key={item.id} item={item} index={i} />
         ))}
       </ul>
-      {items.length > 0 && items[0].src && (
-        <p className="mt-4 text-sm text-ink-muted">
+      {hasPhotos && (
+        <p className="mt-2 text-sm text-ink-muted">
           {items.length} photo{items.length === 1 ? '' : 's'} · tap a photo to open it full size.
         </p>
       )}
