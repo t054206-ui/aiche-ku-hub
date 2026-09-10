@@ -1,0 +1,10 @@
+/** Barrel export so components import from one place. */
+export { SITE_CONFIG, NAV_ITEMS, SOCIALS } from './site'
+export { LINK_GROUPS } from './links'
+export { EVENTS } from './events'
+export { ANNOUNCEMENTS } from './announcements'
+export { ABOUT } from './about'
+export { RESOURCE_CATEGORIES, searchResources } from './resources'
+export { TEAM } from './team'
+export { OUR_YEAR } from './stats'
+export { GALLERY } from './gallery'
