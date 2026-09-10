@@ -68,6 +68,33 @@ become available. Nothing else needs to change.
 Data files reference icons by name (e.g. `icon: 'CalendarDays'`). The registry is
 `src/components/ui/Icon.jsx` — add any [lucide](https://lucide.dev/icons) icon there to use it.
 
+## Content in Supabase
+
+All content the site shows is also stored in a Supabase project, so the committee can edit it in the
+Supabase dashboard (Table Editor) without touching code:
+
+| Table | What it holds |
+| --- | --- |
+| `site_config` | Society details, contact info, key URLs (one row) |
+| `nav_items`, `socials` | Navigation and social channels |
+| `link_groups`, `links` | The link hub |
+| `events`, `announcements` | Events (auto-expire by date) and announcements |
+| `sections`, `about_highlights`, `year_stats`, `gallery_items`, `team_members` | About, Our year, Gallery, Team |
+| `resource_categories`, `resources` | Student resources |
+| `course_categories`, `courses`, `academic_plans`, `assistant_settings` | Major sheets and the Schedule Assistant |
+| `planner_saves` | Anonymous copies of students' planner selections (write-only from the site) |
+| `analytics_events` | Every tracked click (write-only from the site) |
+
+**How it works.** `src/lib/content/ContentProvider.jsx` renders the bundled data from `src/data` instantly,
+then loads every table from Supabase and swaps it in (cached in the browser for the next visit). If
+Supabase is unreachable or not configured, the site keeps working from the bundled data. Row Level
+Security lets the public key read content and insert planner saves / analytics only; editing happens in
+the dashboard.
+
+* Connection: `src/data/supabase-config.js` (public URL + publishable key) or `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`.
+* Schema: `supabase/migrations/0001_content_schema.sql`.
+* Seed: `npm run seed:generate` regenerates `supabase/seed/seed.sql` from `src/data` (the static files stay the fallback and the seed source).
+
 ## Academic plans & Schedule Assistant
 
 Two in-app pages live behind hash routes so the hub stays a single deployable page:

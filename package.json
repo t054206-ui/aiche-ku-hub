@@ -3,14 +3,16 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "AIChE Kuwait University Student Chapter — digital hub",
+  "description": "AIChE Kuwait University Student Chapter \u2014 digital hub",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "seed:generate": "esbuild supabase/seed/generate-seed.mjs --bundle --platform=node --format=esm --define:import.meta.env.VITE_ASSISTANT_ENDPOINT=undefined --outfile=supabase/seed/.gen.bundle.mjs --log-level=warning && node supabase/seed/.gen.bundle.mjs && rm supabase/seed/.gen.bundle.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",
+    "@supabase/supabase-js": "^2.116.0",
     "lucide-react": "^0.475.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
