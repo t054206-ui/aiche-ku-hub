@@ -103,7 +103,7 @@ export function mapGallery(section, items, fallback) {
   return {
     viewMoreUrl: section?.extra?.viewMoreUrl ?? fallback.viewMoreUrl,
     viewMoreLabel: section?.extra?.viewMoreLabel ?? fallback.viewMoreLabel,
-    items: items?.length ? visible(items).map((g) => ({ id: g.id, src: g.src, alt: g.alt, title: g.title, date: g.date_label })) : fallback.items,
+    items: items?.length ? visible(items).map((g) => ({ id: g.id, src: g.src, alt: g.alt, title: g.title, date: g.date_label, width: g.width ?? undefined, height: g.height ?? undefined })) : fallback.items,
   }
 }
 
