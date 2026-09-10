@@ -16,12 +16,14 @@ function GalleryTile({ item, index, isLast }) {
       <figure className="group relative h-full overflow-hidden rounded-2xl border border-line bg-white shadow-card">
         <div className={`${ratio} w-full`}>
           {item.src ? (
-            <img
-              src={item.src}
-              alt={item.alt || item.title || 'AIChE KU event'}
-              loading="lazy"
-              className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-            />
+            <a href={item.src} target="_blank" rel="noopener noreferrer" className="block h-full w-full" aria-label={`Open photo: ${item.title || item.alt || 'AIChE KU event'}`}>
+              <img
+                src={item.src}
+                alt={item.alt || item.title || 'AIChE KU event'}
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+              />
+            </a>
           ) : (
             <div className="photo-placeholder flex h-full w-full flex-col items-center justify-center gap-2 text-brand-300 transition-colors group-hover:text-brand-500">
               <Icon name="Camera" className="h-7 w-7" />
@@ -40,8 +42,15 @@ function GalleryTile({ item, index, isLast }) {
   )
 }
 
+/** Show every real photo; fall back to six branded placeholders while none exist. */
+function visibleItems(items) {
+  const withPhotos = items.filter((item) => item.src)
+  return withPhotos.length ? withPhotos : items.slice(0, 6)
+}
+
 export default function Gallery() {
   const { gallery: GALLERY } = useContent()
+  const items = visibleItems(GALLERY.items)
   return (
     <Section id="gallery" aria-labelledby="gallery-title">
       <SectionHeading
@@ -62,10 +71,15 @@ export default function Gallery() {
         }
       />
       <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-        {GALLERY.items.slice(0, 6).map((item, i, all) => (
+        {items.map((item, i, all) => (
           <GalleryTile key={item.id} item={item} index={i} isLast={i === all.length - 1 && all.length % 2 === 0} />
         ))}
       </ul>
+      {items.length > 0 && items[0].src && (
+        <p className="mt-4 text-sm text-ink-muted">
+          {items.length} photo{items.length === 1 ? '' : 's'} · tap a photo to open it full size.
+        </p>
+      )}
     </Section>
   )
 }
