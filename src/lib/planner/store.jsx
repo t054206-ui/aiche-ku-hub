@@ -82,8 +82,7 @@ export function PlannerProvider({ children }) {
     if (!id) return
     const timer = setTimeout(() => {
       supabase
-        .from('planner_saves')
-        .upsert({ client_id: id, plan_id: data.planId, completed: data.completed, in_progress: data.inProgress, pinned: data.pinned, prefs: data.prefs, updated_at: new Date().toISOString() })
+        .rpc('save_planner', { p_client_id: id, p_plan_id: data.planId, p_completed: data.completed, p_in_progress: data.inProgress, p_pinned: data.pinned, p_prefs: data.prefs })
         .then(({ error }) => {
           if (error && import.meta.env.DEV) console.warn('[planner] save failed:', error.message)
         })
