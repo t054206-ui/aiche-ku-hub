@@ -7,16 +7,15 @@ import PlanOverview from '../components/academic/PlanOverview'
 import PlanCourses from '../components/academic/PlanCourses'
 import CourseExplorer from '../components/academic/CourseExplorer'
 import { usePlanner } from '../lib/planner/store'
-import { getPlan } from '../data/academic/plans'
 
 export default function AcademicPlansPage({ params }) {
-  const { plan, catalog, state, setPlan } = usePlanner()
+  const { plan, catalog, state, setPlan, getPlan } = usePlanner()
 
   // #/plans?plan=che-2019 preselects a sheet.
   useEffect(() => {
     const wanted = params.get('plan')
     if (wanted && getPlan(wanted) && wanted !== plan.id) setPlan(wanted)
-  }, [params, plan.id, setPlan])
+  }, [params, plan.id, setPlan, getPlan])
 
   return (
     <>

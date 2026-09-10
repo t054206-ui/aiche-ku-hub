@@ -13,8 +13,7 @@ import Disclaimer from '../components/planner/Disclaimer'
 import CourseExplorer from '../components/academic/CourseExplorer'
 import { usePlanner } from '../lib/planner/store'
 import { suggestSemester } from '../lib/planner/engine'
-import { getPlan } from '../data/academic/plans'
-import { ASSISTANT } from '../data/academic/assistant'
+import { useContent } from '../lib/content'
 import { routeHref, ROUTES } from '../lib/router'
 
 const STEPS = [
@@ -45,7 +44,8 @@ function StepCard({ index, step, active, done, summary, onOpen, children }) {
 
 export default function PlannerPage({ params }) {
   const planner = usePlanner()
-  const { plan, catalog, state, data, setPlan, setStep, toggleCompleted, toggleInProgress, setMany, setPrefs } = planner
+  const { plan, catalog, state, data, setPlan, setStep, toggleCompleted, toggleInProgress, setMany, setPrefs, getPlan } = planner
+  const { assistant: ASSISTANT } = useContent()
   const [prefsOverride, setPrefsOverride] = useState(null)
   const [version, setVersion] = useState(0)
   const [showResult, setShowResult] = useState(() => data.completed.length > 0)
@@ -54,7 +54,7 @@ export default function PlannerPage({ params }) {
   useEffect(() => {
     const wanted = params.get('plan')
     if (wanted && getPlan(wanted) && wanted !== plan.id) setPlan(wanted)
-  }, [params, plan.id, setPlan])
+  }, [params, plan.id, setPlan, getPlan])
 
   const prefs = useMemo(() => ({ ...data.prefs, ...(prefsOverride ?? {}) }), [data.prefs, prefsOverride])
   // eslint-disable-next-line react-hooks/exhaustive-deps
