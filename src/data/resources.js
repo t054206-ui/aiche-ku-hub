@@ -56,11 +56,11 @@ export const RESOURCE_CATEGORIES = [
 ]
 
 /** Flat list used by the search box. */
-export function searchResources(query) {
+export function searchResources(query, categories = RESOURCE_CATEGORIES) {
   const q = query.trim().toLowerCase()
   if (!q) return []
   const results = []
-  for (const category of RESOURCE_CATEGORIES) {
+  for (const category of categories) {
     for (const item of category.items) {
       const haystack = [item.title, item.description, category.title, ...(item.tags || [])]
         .join(' ')
