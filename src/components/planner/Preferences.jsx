@@ -1,4 +1,4 @@
-import { ASSISTANT } from '../../data/academic/assistant'
+import { useContent } from '../../lib/content'
 
 function Chip({ on, onClick, children }) {
   return (
@@ -19,6 +19,7 @@ function Field({ label, hint, children }) {
 }
 
 export default function Preferences({ prefs, onChange }) {
+  const { assistant: ASSISTANT } = useContent()
   const toggleDay = (day) => onChange({ avoidDays: prefs.avoidDays.includes(day) ? prefs.avoidDays.filter((d) => d !== day) : [...prefs.avoidDays, day] })
   const select = 'h-11 w-full appearance-none rounded-full border border-line bg-white px-4 font-display text-sm font-semibold text-brand-700 focus:border-brand-300'
   return (

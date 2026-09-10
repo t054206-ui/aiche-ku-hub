@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react'
 import Icon from '../ui/Icon'
-import { COURSE_CATEGORIES } from '../../data/academic/courses'
+import { useContent } from '../../lib/content'
 
 /**
  * Checklist of plan courses grouped by requirement group.
  * mode = 'completed' | 'inProgress'; `exclude` hides codes already in the other list.
  */
 export default function CoursePicker({ plan, catalog, selected, exclude = new Set(), onToggle, onSetMany, mode }) {
+  const { courseCategories: COURSE_CATEGORIES } = useContent()
   const [q, setQ] = useState('')
   const [openGroups, setOpenGroups] = useState(() => new Set(plan.requirements.slice(0, 1).map((g) => g.id)))
 

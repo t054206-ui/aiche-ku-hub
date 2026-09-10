@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import Icon from '../ui/Icon'
 import Logo from '../Logo'
-import { ASSISTANT } from '../../data/academic/assistant'
 import { respond } from '../../lib/assistant/respond'
+import { useContent } from '../../lib/content'
 import { askModel, buildContext, llmEnabled } from '../../lib/assistant/llm'
 import { track, ANALYTICS_EVENTS } from '../../lib/analytics'
 
@@ -11,6 +11,7 @@ const QUICK_PROMPTS = ['What should I take next?', 'What if I take 5 courses?', 
 /** Conversational layer over the planning engine. */
 export default function Chat({ planner, suggestion, onSuggestionRequested, onPrefsOverride }) {
   const { plan, catalog, state, data, pushMessage, setPrefs, setMany } = planner
+  const { assistant: ASSISTANT } = useContent()
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
   const listRef = useRef(null)
@@ -37,7 +38,7 @@ export default function Chat({ planner, suggestion, onSuggestionRequested, onPre
     setBusy(true)
 
     // Always compute the grounded, rule-based answer first.
-    const local = respond(message, { plan, catalog, state, prefs: data.prefs })
+    const local = respond(message, { plan, catalog, state, prefs: data.prefs, assistant: ASSISTANT })
     applyActions(local.actions)
     if (local.prefsOverride) onPrefsOverride?.(local.prefsOverride)
     if (local.suggestion) onSuggestionRequested?.()
