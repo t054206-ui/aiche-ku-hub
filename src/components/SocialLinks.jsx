@@ -2,10 +2,11 @@ import { Section, SectionHeading } from './ui/Section'
 import Reveal from './ui/Reveal'
 import SmartLink, { isPlaceholder } from './ui/SmartLink'
 import Icon from './ui/Icon'
-import { SOCIALS } from '../data'
+import { useContent } from '../lib/content'
 import { ANALYTICS_EVENTS } from '../lib/analytics'
 
 export default function SocialLinks() {
+  const { socials: SOCIALS } = useContent()
   return (
     <Section id="follow" tone="white" aria-labelledby="follow-title">
       <SectionHeading id="follow-title" eyebrow="Social media" title="Follow AIChE KU" description="Announcements go out on Instagram first — turn on notifications." />

@@ -2,9 +2,10 @@ import { Section } from './ui/Section'
 import Reveal from './ui/Reveal'
 import Icon from './ui/Icon'
 import Logo from './Logo'
-import { ABOUT } from '../data'
+import { useContent } from '../lib/content'
 
 export default function About() {
+  const { about: ABOUT } = useContent()
   return (
     <Section id="about" tone="white" aria-labelledby="about-title">
       <div className="grid gap-10 md:grid-cols-5 md:gap-12">

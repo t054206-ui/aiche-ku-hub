@@ -3,7 +3,7 @@ import { Section, SectionHeading } from './ui/Section'
 import Reveal from './ui/Reveal'
 import SmartLink from './ui/SmartLink'
 import Icon from './ui/Icon'
-import { TEAM } from '../data'
+import { useContent } from '../lib/content'
 
 const initials = (name) =>
   name
@@ -75,6 +75,7 @@ function TeamCard({ member, index }) {
 }
 
 export default function Team() {
+  const { team: TEAM } = useContent()
   return (
     <Section id="team" tone="white" aria-labelledby="team-title">
       <SectionHeading

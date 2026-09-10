@@ -1,13 +1,15 @@
 import Logo from './Logo'
 import SmartLink from './ui/SmartLink'
 import Icon from './ui/Icon'
-import { NAV_ITEMS, SITE_CONFIG, SOCIALS } from '../data'
+import { useContent } from '../lib/content'
 import { routeHref, ROUTES } from '../lib/router'
 
-const FOOTER_LINKS = [...NAV_ITEMS.filter((i) => i.href !== '#/plans'), { label: 'Academic plans', href: routeHref(ROUTES.plans) }, { label: 'Plan my semester', href: routeHref(ROUTES.planner) }]
+const footerLinks = (NAV_ITEMS) => [...NAV_ITEMS.filter((i) => i.href !== '#/plans'), { label: 'Academic plans', href: routeHref(ROUTES.plans) }, { label: 'Plan my semester', href: routeHref(ROUTES.planner) }]
 import { ANALYTICS_EVENTS } from '../lib/analytics'
 
 export default function Footer() {
+  const { site: SITE_CONFIG, navItems: NAV_ITEMS, socials: SOCIALS } = useContent()
+  const FOOTER_LINKS = footerLinks(NAV_ITEMS)
   const year = new Date().getFullYear()
   return (
     <footer className="bg-brand-900 text-white">

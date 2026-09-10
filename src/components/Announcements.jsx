@@ -3,7 +3,7 @@ import Reveal from './ui/Reveal'
 import Badge from './ui/Badge'
 import SmartLink from './ui/SmartLink'
 import Icon from './ui/Icon'
-import { ANNOUNCEMENTS } from '../data'
+import { useContent } from '../lib/content'
 import { formatEventDate } from '../lib/events'
 import { ANALYTICS_EVENTS } from '../lib/analytics'
 
@@ -14,6 +14,7 @@ const CATEGORY_STYLE = {
 }
 
 export default function Announcements() {
+  const { announcements: ANNOUNCEMENTS } = useContent()
   if (ANNOUNCEMENTS.length === 0) return null
 
   return (

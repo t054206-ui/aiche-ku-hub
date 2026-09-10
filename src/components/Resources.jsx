@@ -3,7 +3,8 @@ import { Section, SectionHeading } from './ui/Section'
 import Reveal from './ui/Reveal'
 import SmartLink, { isPlaceholder } from './ui/SmartLink'
 import Icon from './ui/Icon'
-import { RESOURCE_CATEGORIES, searchResources } from '../data'
+import { searchResources } from '../data/resources'
+import { useContent } from '../lib/content'
 import { ANALYTICS_EVENTS } from '../lib/analytics'
 
 function ResourceRow({ item, categoryTitle }) {
@@ -69,10 +70,11 @@ function CategoryCard({ category, open, onToggle, index }) {
 }
 
 export default function Resources() {
+  const { resources: RESOURCE_CATEGORIES } = useContent()
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState(RESOURCE_CATEGORIES[0]?.id ?? null)
   const inputId = useId()
-  const results = useMemo(() => searchResources(query), [query])
+  const results = useMemo(() => searchResources(query, RESOURCE_CATEGORIES), [query, RESOURCE_CATEGORIES])
   const searching = query.trim().length > 0
 
   return (

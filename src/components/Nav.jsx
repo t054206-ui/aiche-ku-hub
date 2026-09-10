@@ -4,10 +4,11 @@ import Logo from './Logo'
 import Button from './ui/Button'
 import SmartLink from './ui/SmartLink'
 import Icon from './ui/Icon'
-import { NAV_ITEMS, SITE_CONFIG, SOCIALS } from '../data'
+import { useContent } from '../lib/content'
 import { ANALYTICS_EVENTS } from '../lib/analytics'
 
 export default function Nav() {
+  const { site: SITE_CONFIG, navItems: NAV_ITEMS, socials: SOCIALS } = useContent()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 

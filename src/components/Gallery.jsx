@@ -2,7 +2,7 @@ import { Section, SectionHeading } from './ui/Section'
 import Reveal from './ui/Reveal'
 import Button from './ui/Button'
 import Icon from './ui/Icon'
-import { GALLERY } from '../data'
+import { useContent } from '../lib/content'
 import { ANALYTICS_EVENTS } from '../lib/analytics'
 
 function GalleryTile({ item, index, isLast }) {
@@ -41,6 +41,7 @@ function GalleryTile({ item, index, isLast }) {
 }
 
 export default function Gallery() {
+  const { gallery: GALLERY } = useContent()
   return (
     <Section id="gallery" aria-labelledby="gallery-title">
       <SectionHeading

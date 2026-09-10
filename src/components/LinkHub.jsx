@@ -2,7 +2,7 @@ import { Section, SectionHeading } from './ui/Section'
 import Reveal from './ui/Reveal'
 import SmartLink, { isPlaceholder } from './ui/SmartLink'
 import Icon from './ui/Icon'
-import { LINK_GROUPS, SITE_CONFIG } from '../data'
+import { useContent } from '../lib/content'
 import { ANALYTICS_EVENTS } from '../lib/analytics'
 
 function LinkCard({ link, groupId }) {
@@ -71,6 +71,7 @@ function LinkGroup({ group, index }) {
 }
 
 export default function LinkHub() {
+  const { linkGroups: LINK_GROUPS, site: SITE_CONFIG } = useContent()
   return (
     <Section id="links" className="pt-12 sm:pt-16" aria-labelledby="links-title">
       <SectionHeading id="links-title" eyebrow="Link hub" title={SITE_CONFIG.tagline} description="Quick access to the links students ask for most — join, register, follow, and get in touch." />

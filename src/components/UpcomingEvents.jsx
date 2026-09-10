@@ -4,14 +4,15 @@ import Reveal from './ui/Reveal'
 import Button from './ui/Button'
 import Icon from './ui/Icon'
 import EventCard from './EventCard'
-import { EVENTS, SITE_CONFIG } from '../data'
+import { useContent } from '../lib/content'
 import { getUpcomingEvents } from '../lib/events'
 import { ANALYTICS_EVENTS } from '../lib/analytics'
 
 const MAX_EVENTS = 3
 
 export default function UpcomingEvents() {
-  const upcoming = useMemo(() => getUpcomingEvents(EVENTS, new Date(), MAX_EVENTS), [])
+  const { events: EVENTS, site: SITE_CONFIG } = useContent()
+  const upcoming = useMemo(() => getUpcomingEvents(EVENTS, new Date(), MAX_EVENTS), [EVENTS])
 
   return (
     <Section id="events" tone="white" aria-labelledby="events-title">

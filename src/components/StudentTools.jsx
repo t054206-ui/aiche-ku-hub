@@ -3,10 +3,10 @@ import Reveal from './ui/Reveal'
 import Button from './ui/Button'
 import Icon from './ui/Icon'
 import { routeHref, ROUTES } from '../lib/router'
-import { DEFAULT_PLAN_ID } from '../data/academic/plans'
+import { usePlanner } from '../lib/planner/store'
 import { ANALYTICS_EVENTS } from '../lib/analytics'
 
-const TOOLS = [
+const tools = (planId) => [
   {
     id: 'plans',
     icon: 'GraduationCap',
@@ -23,13 +23,15 @@ const TOOLS = [
     text: 'Get help planning your next semester.',
     detail: 'Tell the assistant what you have completed and get a suggested course load.',
     cta: 'Start planning',
-    href: routeHref(ROUTES.planner, { plan: DEFAULT_PLAN_ID }),
+    href: routeHref(ROUTES.planner, { plan: planId }),
     accent: true,
   },
 ]
 
 /** Homepage entry point for the two academic tools. */
 export default function StudentTools() {
+  const { plan } = usePlanner()
+  const TOOLS = tools(plan.id)
   return (
     <Section id="tools" aria-labelledby="tools-title" className="pt-0 sm:pt-0">
       <SectionHeading id="tools-title" eyebrow="Student tools" title="Built for ChE students" description="Your major sheet and a planning assistant, right here in the hub." />

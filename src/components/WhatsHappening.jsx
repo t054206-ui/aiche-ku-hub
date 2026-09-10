@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import Badge from './ui/Badge'
 import Button from './ui/Button'
 import Icon from './ui/Icon'
-import { EVENTS, SITE_CONFIG } from '../data'
+import { useContent } from '../lib/content'
 import { formatEventDate, formatTimeRange, getFeaturedEvent, relativeDayLabel, REGISTRATION_STATUS } from '../lib/events'
 import { ANALYTICS_EVENTS } from '../lib/analytics'
 
@@ -13,7 +13,8 @@ const STATUS_TONE = { now: 'live', next: 'info', soon: 'soft', none: 'soft' }
  * Chooses HAPPENING NOW / NEXT UP / COMING SOON from the event dates.
  */
 export default function WhatsHappening() {
-  const { event, status, label } = useMemo(() => getFeaturedEvent(EVENTS, new Date()), [])
+  const { events: EVENTS, site: SITE_CONFIG } = useContent()
+  const { event, status, label } = useMemo(() => getFeaturedEvent(EVENTS, new Date()), [EVENTS])
   const registration = event ? REGISTRATION_STATUS[event.status] || REGISTRATION_STATUS.open : null
   const relative = event ? relativeDayLabel(event.timing.daysUntil) : null
 

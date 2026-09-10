@@ -2,10 +2,10 @@ import { Section, SectionHeading } from './ui/Section'
 import Reveal from './ui/Reveal'
 import Button from './ui/Button'
 import Icon from './ui/Icon'
-import { SITE_CONFIG } from '../data'
+import { useContent } from '../lib/content'
 import { ANALYTICS_EVENTS } from '../lib/analytics'
 
-const CONTACT_OPTIONS = [
+const contactOptions = (SITE_CONFIG) => [
   {
     id: 'email',
     icon: 'Mail',
@@ -33,6 +33,8 @@ const CONTACT_OPTIONS = [
 ]
 
 export default function Contact() {
+  const { site } = useContent()
+  const CONTACT_OPTIONS = contactOptions(site)
   return (
     <Section id="contact" aria-labelledby="contact-title">
       <SectionHeading

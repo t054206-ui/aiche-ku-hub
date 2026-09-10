@@ -1,9 +1,10 @@
 import { Section, SectionHeading } from './ui/Section'
 import Reveal from './ui/Reveal'
 import Icon from './ui/Icon'
-import { OUR_YEAR } from '../data'
+import { useContent } from '../lib/content'
 
 export default function OurYear() {
+  const { ourYear: OUR_YEAR } = useContent()
   return (
     <Section id="our-year" tone="dark" aria-labelledby="year-title" className="relative overflow-hidden">
       <div className="hero-grid pointer-events-none absolute inset-0" aria-hidden="true" />

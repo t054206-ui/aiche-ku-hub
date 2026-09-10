@@ -2,12 +2,13 @@ import Logo from './Logo'
 import Button from './ui/Button'
 import SmartLink from './ui/SmartLink'
 import Icon from './ui/Icon'
-import { SITE_CONFIG, SOCIALS } from '../data'
+import { useContent } from '../lib/content'
 import { ANALYTICS_EVENTS } from '../lib/analytics'
 
 const HERO_SOCIALS = ['instagram', 'linkedin', 'email']
 
 export default function Hero() {
+  const { site: SITE_CONFIG, socials: SOCIALS } = useContent()
   const socials = SOCIALS.filter((s) => HERO_SOCIALS.includes(s.id))
 
   return (
