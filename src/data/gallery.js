@@ -2,7 +2,7 @@ import { SITE_CONFIG } from './site'
 
 /**
  * =====================================================================
- *  GALLERY — 4 to 6 photos work best.
+ *  GALLERY — every item with a photo is shown (add as many rows as you like).
  *  Photos live in the Supabase Storage bucket "gallery" (public). Upload a photo in
  *  the Supabase dashboard → Storage → gallery, copy its public URL, and set `src`
  *  (or edit the gallery_items table directly — the live site reads from there).
