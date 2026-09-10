@@ -5,6 +5,7 @@ import CourseRow from './CourseRow'
 import { useCourseDetail } from './CourseDetail'
 import { searchCourses } from '../../lib/planner/engine'
 import { usePlanner } from '../../lib/planner/store'
+import { useContent } from '../../lib/content'
 
 /** Search any course on the selected sheet and add it to your plan. */
 export default function CourseExplorer({ compact = false }) {
@@ -12,7 +13,8 @@ export default function CourseExplorer({ compact = false }) {
   const [q, setQ] = useState('')
   const id = useId()
   const open = useCourseDetail()
-  const results = useMemo(() => searchCourses(catalog, q), [catalog, q])
+  const { courseCategories } = useContent()
+  const results = useMemo(() => searchCourses(catalog, q, { categories: courseCategories }), [catalog, q, courseCategories])
 
   return (
     <section aria-labelledby={`${id}-title`} className={compact ? '' : 'mt-10'}>

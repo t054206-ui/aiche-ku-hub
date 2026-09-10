@@ -4,6 +4,7 @@ import Reveal from '../ui/Reveal'
 import CourseRow from './CourseRow'
 import { groupCourses } from '../../lib/planner/engine'
 import { useCourseDetail } from './CourseDetail'
+import { useContent } from '../../lib/content'
 
 const SEMESTER_ORDER = ['Fall', 'Spring', 'Summer']
 
@@ -40,6 +41,7 @@ function SlotRow({ slot, catalog, onOpen }) {
 export default function PlanCourses({ plan, catalog, state }) {
   const [view, setView] = useState('year')
   const open = useCourseDetail()
+  const { courseCategories } = useContent()
   const hasOfficialSemesters = Array.isArray(plan.semesters) && plan.semesters.length > 0
 
   const yearGroups = hasOfficialSemesters
@@ -51,8 +53,8 @@ export default function PlanCourses({ plan, catalog, state }) {
           .sort((a, b) => SEMESTER_ORDER.indexOf(a.term) - SEMESTER_ORDER.indexOf(b.term))
           .map((s) => ({ ...s, courses: s.courses.map((c) => catalog.get(c)).filter(Boolean) })),
       }))
-    : groupCourses(plan, catalog, 'level')
-  const categoryGroups = groupCourses(plan, catalog, 'category')
+    : groupCourses(plan, catalog, 'level', courseCategories)
+  const categoryGroups = groupCourses(plan, catalog, 'category', courseCategories)
   const deptElectives = (plan.deptElectives ?? []).map((c) => catalog.get(c)).filter(Boolean)
 
   return (

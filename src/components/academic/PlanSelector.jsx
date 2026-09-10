@@ -1,11 +1,11 @@
 import { useId } from 'react'
 import Icon from '../ui/Icon'
-import { ACADEMIC_PLANS } from '../../data/academic/plans'
+import { usePlanner } from '../../lib/planner/store'
 
 /** "Select your academic year" — a native select styled like the site's inputs (works great on phones). */
 export default function PlanSelector({ value, onChange, label = 'Select your academic year', compact = false }) {
   const id = useId()
-  const plans = ACADEMIC_PLANS
+  const { plans } = usePlanner()
   return (
     <div className={compact ? '' : 'rounded-2xl border border-line bg-white p-4 shadow-card sm:p-5'}>
       <label htmlFor={id} className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted">

@@ -1,6 +1,6 @@
 import Icon from '../ui/Icon'
 import EligibilityBadge from './EligibilityBadge'
-import { COURSE_CATEGORIES } from '../../data/academic/courses'
+import { useContent } from '../../lib/content'
 import { displayName, getEligibility, requirementText } from '../../lib/planner/engine'
 
 /**
@@ -8,6 +8,7 @@ import { displayName, getEligibility, requirementText } from '../../lib/planner/
  * `showStatus` adds the student's eligibility (needs planner state).
  */
 export default function CourseRow({ course, catalog, state, onOpen, showStatus = false, trailing = null }) {
+  const { courseCategories: COURSE_CATEGORIES } = useContent()
   const elig = showStatus && state ? getEligibility(course, state, catalog) : null
   const pre = (course.prerequisites ?? []).map((r) => requirementText(r, catalog))
   return (

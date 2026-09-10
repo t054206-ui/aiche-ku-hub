@@ -3,7 +3,7 @@ import Icon from '../ui/Icon'
 import Badge from '../ui/Badge'
 import Button from '../ui/Button'
 import EligibilityBadge from './EligibilityBadge'
-import { COURSE_CATEGORIES } from '../../data/academic/courses'
+import { useContent } from '../../lib/content'
 import { directDependents, displayName, getEligibility, requirementText } from '../../lib/planner/engine'
 import { usePlanner } from '../../lib/planner/store'
 import { useToast } from '../ui/Toast'
@@ -63,6 +63,7 @@ const metCo = (r, state) => (r.type === 'course' ? state.completed.has(r.code) |
 
 function CourseSheet({ code, onClose }) {
   const { catalog, state, plan, togglePinned, toggleCompleted, toggleInProgress } = usePlanner()
+  const { courseCategories: COURSE_CATEGORIES } = useContent()
   const toast = useToast()
   const course = catalog.get(code)
   if (!course) return null
