@@ -5,7 +5,7 @@
  *
  * Returns { text, actions?: [{ type, ... }], suggestion?: boolean }
  */
-import { ASSISTANT } from '../../data/academic/assistant'
+import { ASSISTANT as STATIC_ASSISTANT } from '../../data/academic/assistant'
 import { canTakeTogether, displayName, findCourseInText, getEligibility, requirementText, suggestSemester, whatIfSkip } from '../planner/engine'
 
 const HELP = [
@@ -20,7 +20,8 @@ const HELP = [
 
 const listCourses = (courses) => courses.map((c) => `${displayName(c)} (${c.code})`).join(', ')
 
-export function respond(message, { plan, catalog, state, prefs }) {
+export function respond(message, { plan, catalog, state, prefs, assistant }) {
+  const ASSISTANT = assistant ?? STATIC_ASSISTANT
   const text = message.trim()
   const lower = text.toLowerCase()
   const mentioned = findCourseInText(text, catalog)
